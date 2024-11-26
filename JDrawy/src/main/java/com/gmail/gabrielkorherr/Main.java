@@ -43,15 +43,22 @@ public class Main {
 
         return parseInt(sourceX).flatMap(x ->
                 parseInt(sourceY).map(y ->
-                        () -> System.out.println("dot (" + x + ", " + y + ')')));
+                        dotOperation(x, y)));
+    }
+
+    private static Runnable dotOperation(int x, int y) {
+        return () -> System.out.println("dot (" + x + ", " + y + ')');
     }
 
     private static Optional<Runnable> lineOperation(List<String> args) {
         assert args != null : "args must not be null";
 
-        return lineParameters(args).map(parameters ->
-                () -> System.out.println("line (" + parameters.startX + ", " + parameters.startY + ")" +
-                        " -> (" + parameters.endX + ", " + parameters.endY + ")"));
+        return lineParameters(args).map(Main::lineOperation);
+    }
+
+    private static Runnable lineOperation(LineParameters parameters) {
+        return () -> System.out.println("line (" + parameters.startX + ", " + parameters.startY + ")" +
+                " -> (" + parameters.endX + ", " + parameters.endY + ")");
     }
 
     private record LineParameters(int startX, int startY, int endX, int endY) {
