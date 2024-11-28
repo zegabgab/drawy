@@ -16,7 +16,7 @@ public class Main {
     private static Optional<Runnable> operation(String source) {
         assert source != null : "source must not be null";
 
-        final var split = List.of(source.split(" +"));
+        final var split = List.of(source.split("[ \t]+"));
         return split.isEmpty() ? Optional.empty() : namedOperation(split.getFirst(), split.subList(1, split.size()));
     }
 
