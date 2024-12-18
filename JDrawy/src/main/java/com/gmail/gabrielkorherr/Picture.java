@@ -5,8 +5,8 @@ import java.awt.image.*;
 import java.io.*;
 
 public class Picture {
-    public static void save(String path) {
-        var image = getImage();
+    public static void save(String path, int maxIterations) {
+        var image = getImage(maxIterations);
 
         try {
             ImageIO.write(image, "png", new File(path));
@@ -15,15 +15,13 @@ public class Picture {
         }
     }
 
-    private static BufferedImage getImage() {
+    private static BufferedImage getImage(int maxIterations) {
         final int inside = color(100, 0, 150, 255);
         final int outside = color(200, 180, 0, 255);
 
         final int width = 7680;
         final int height = 4320;
-        final double upperBound = 2.0;
-
-        final int maxIterations = 100;
+        final double upperBound = 3.0;
 
         var image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         for (int i = 0; i < width; i++) {
