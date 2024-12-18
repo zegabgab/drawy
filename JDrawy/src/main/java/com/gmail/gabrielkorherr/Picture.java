@@ -5,11 +5,6 @@ import java.awt.image.*;
 import java.io.*;
 
 public class Picture {
-    private static final int ALPHA = 1 << (8 * 3);
-    private static final int RED = 1 << (8 * 2);
-    private static final int GREEN = 1 << 8;
-    private static final int BLUE = 1;
-
     public static void save(String path) {
         var image = getImage();
 
@@ -20,15 +15,37 @@ public class Picture {
         }
     }
 
-    @SuppressWarnings("NumericOverflow")
     private static BufferedImage getImage() {
-        var image = new BufferedImage(420, 69, BufferedImage.TYPE_4BYTE_ABGR);
-        for (int i = 0; i < 420; i++) {
-            for (int j = 0; j < 69; j++) {
-                image.setRGB(i, j, ALPHA * 255 + RED * 100 + GREEN + BLUE * 120);
+        final int inside = color(100, 0, 150, 255);
+        final int outside = color(200, 180, 0, 255);
+
+        final int width = 7680;
+        final int height = 4320;
+        final double upperBound = 2.0;
+
+        final int maxIterations = 100;
+
+        var image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                final var complex = fromPixelSpace(i, j, width, height, upperBound);
+                final var color = Mandelbrot.contains(complex, maxIterations) ? inside : outside;
+                image.setRGB(i, j, color);
             }
         }
 
         return image;
+    }
+
+    private static Complex fromPixelSpace(int x, int y, int width, int height, double upperBound) {
+        final double rightBound = upperBound * width / height;
+        final double realX = (x - ((double) width / 2)) * (rightBound / (double) width);
+        final double realY = (y - ((double) height / 2)) * (upperBound / (double) height);
+
+        return new Complex(realX, realY);
+    }
+
+    private static int color(int red, int green, int blue, int alpha) {
+        return (alpha << 24) | (red << 16) | (green << 8) | blue;
     }
 }
