@@ -1,15 +1,33 @@
 package com.gmail.gabrielkorherr;
 
 public class Mandelbrot {
-    public static boolean contains(Complex number, int maxIterations) {
+    public static FractalResult contains(Complex number, int maxIterations) {
         assert maxIterations >= 0;
+        var current = number;
 
-        return contains(Complex.ZERO, number, maxIterations);
+        for (int i = 0; i < maxIterations; i++) {
+            if (!current.isWithin(2)) {
+                return new FractalResult.Outside(howFar(number, maxIterations));
+            }
+
+            current = iterate(current, number);
+        }
+
+        return new FractalResult.Inside();
     }
 
-    private static boolean contains(Complex current, Complex origin, int maxIterations) {
-        return current.isWithin(2) &&
-                (maxIterations <= 0 || contains(iterate(current, origin), origin, maxIterations - 1));
+    private static int howFar(Complex number, int maxIterations) {
+        var current = number;
+
+        for (int i = 0; i < maxIterations; i++) {
+            if (!current.isWithin(1000)) {
+                return i;
+            }
+
+            current = iterate(current, number);
+        }
+
+        return maxIterations;
     }
 
     private static Complex iterate(Complex current, Complex origin) {
