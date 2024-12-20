@@ -3,11 +3,8 @@ package com.gmail.gabrielkorherr;
 import javax.imageio.*;
 import java.awt.image.*;
 import java.io.*;
-import java.util.*;
 
 public class Picture {
-    private static final ArrayList<Integer> missIterations = new ArrayList<>();
-
     public static void save(String path, int maxIterations) {
         var image = getImage(maxIterations);
 
@@ -20,7 +17,6 @@ public class Picture {
 
     private static BufferedImage getImage(int maxIterations) {
         final int insideColor = color(100, 0, 150, 255);
-        final int outside = color(200, 180, 0, 255);
 
         final int width = 7680 / 4;
         final int height = 4320 / 4;
@@ -38,20 +34,16 @@ public class Picture {
             }
         }
 
-        System.out.println("Average required iterations to determine miss: " +
-                missIterations.stream().mapToDouble(x -> (double) x).average().orElse(0));
-        missIterations.clear();
-
         return image;
     }
 
     private static int outsideColor(int iterations) {
-        final int sensitivity = 20;
-        final double ratio = iterations <= sensitivity ? (double) iterations / sensitivity : 1;
-        missIterations.add(iterations);
+        final int sensitivity = 10;
+        iterations %= sensitivity * 2;
+        final double ratio = (double) (iterations % sensitivity) / sensitivity;
 
-        if (iterations > 1.3 * sensitivity) {
-            return color(0, 180, 0, 255);
+        if (iterations >= sensitivity) {
+            return color(0, (int) (200 * ratio) + 55, 0, 255);
         }
 
         return color((int) (200.0 * ratio), (int) (180.0 * ratio), 0, 255);
