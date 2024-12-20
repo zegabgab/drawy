@@ -3,34 +3,37 @@ package com.gmail.gabrielkorherr;
 public class Mandelbrot {
     public static FractalResult contains(Complex number, int maxIterations) {
         assert maxIterations >= 0;
-        var current = number;
+
+        var origin = ComplexMut.fromComplex(number);
+        var current = ComplexMut.fromComplex(number);
 
         for (int i = 0; i < maxIterations; i++) {
-            if (!current.isWithin(2)) {
+            if (current.isOutside(2)) {
                 return new FractalResult.Outside(howFar(number, maxIterations));
             }
 
-            current = iterate(current, number);
+            iterate(current, origin);
         }
 
-        return new FractalResult.Inside();
+        return FractalResult.INSIDE;
     }
 
     private static int howFar(Complex number, int maxIterations) {
-        var current = number;
+        var origin = ComplexMut.fromComplex(number);
+        var current = ComplexMut.fromComplex(number);
 
         for (int i = 0; i < maxIterations; i++) {
-            if (!current.isWithin(1000)) {
+            if (current.isOutside(500)) {
                 return i;
             }
 
-            current = iterate(current, number);
+            iterate(current, origin);
         }
 
         return maxIterations;
     }
 
-    private static Complex iterate(Complex current, Complex origin) {
-        return current.times(current).plus(origin);
+    private static void iterate(ComplexMut current, ComplexMut origin) {
+        current.multiply(current).add(origin);
     }
 }

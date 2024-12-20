@@ -27,6 +27,6 @@ public record Complex(double real, double imag) {
     }
 
     public boolean isWithin(double absolute) {
-        return real * real + imag * imag <= absolute;
+        return real * real + imag * imag <= absolute * absolute;
     }
 }
