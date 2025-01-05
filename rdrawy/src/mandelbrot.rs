@@ -2,6 +2,7 @@ use crate::complex::*;
 
 pub fn mandelbrot_contains(number: Complex, max_iterations: u32) -> bool {
     std::iter::successors(Some(Complex::ZERO), |predecessor| {
+        let predecessor = *predecessor;
         Some(predecessor * predecessor + number)
     })
     .take(max_iterations as usize)
