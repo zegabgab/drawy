@@ -1,5 +1,6 @@
 mod complex;
 mod mandelbrot;
+mod convergence_set;
 
 use crate::complex::*;
 
